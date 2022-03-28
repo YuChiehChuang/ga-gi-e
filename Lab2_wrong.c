@@ -10,11 +10,11 @@
 #define maxLottoNumSet 5
 
 typedef struct lotto_record {
-    int lotto_no;  //½s¸¹(counter)
-    float lotto_receipt;  //¦¬¾Ú(²Õ¼Æ*50*1.1)
+    int lotto_no;  //ç·¨è™Ÿ(counter)
+    float lotto_receipt;  //æ”¶æ“š(çµ„æ•¸*50*1.1)
     int emp_id;  //id(input)
-    char lotto_date[16];  //¤é´Á
-    char lotto_time[16];  //®É¶¡
+    char lotto_date[16];  //æ—¥æœŸ
+    char lotto_time[16];  //æ™‚é–“
 } lotto_record_t;
 
 int frecord(int counter, int operator_id, int numSet) {
@@ -23,39 +23,39 @@ int frecord(int counter, int operator_id, int numSet) {
     record.lotto_no = counter;
     record.lotto_receipt = ((counter*50) + (numSet*50) * 1.1);
     record.emp_id = operator_id;
-    strftime(record.lotto_date, 100, "%Y%m%d", localtime(&curtime));  //¤é´Á
-    strftime(record.lotto_time, 100, "%H:%M:%S", localtime(&curtime));  //®É¶¡
+    strftime(record.lotto_date, 100, "%Y%m%d", localtime(&curtime));  //æ—¥æœŸ
+    strftime(record.lotto_time, 100, "%H:%M:%S", localtime(&curtime));  //æ™‚é–“
     FILE* fre = fopen(recordFile, "ab");
     fwrite(&record, sizeof(record), 1, fre);
     fclose(fre);
 }
 
-void init_file() {  //§PÂ_¦³µLcounter.bin
+void init_file() {  //åˆ¤æ–·æœ‰ç„¡counter.bin
 	int writeArray[1] = {0};
-	FILE* fp = fopen(counterFile, "r");  //¥ı¥´¶}(°ßÅª)
-	if(fp == NULL) {  //­YµL¦¹ÀÉ®×
-		FILE* tmpfp = fopen(counterFile, "wb+");  //¶}¤@­Ó·sªº 
-		fwrite(writeArray, sizeof(int), 1, tmpfp);  //¼g¶i¥h"No.0" 
+	FILE* fp = fopen(counterFile, "r");  //å…ˆæ‰“é–‹(å”¯è®€)
+	if(fp == NULL) {  //è‹¥ç„¡æ­¤æª”æ¡ˆ
+		FILE* tmpfp = fopen(counterFile, "wb+");  //é–‹ä¸€å€‹æ–°çš„ 
+		fwrite(writeArray, sizeof(int), 1, tmpfp);  //å¯«é€²å»"No.0" 
 		fclose(tmpfp);
-	} else {  //­Y¦³ 
-		fclose(fp);  //ª½±µÃö±¼¡A¤£°µ§ïÅÜ
+	} else {  //è‹¥æœ‰ 
+		fclose(fp);  //ç›´æ¥é—œæ‰ï¼Œä¸åšæ”¹è®Š
 	}
 }
 
-int get_counter() {  //Åª¨úcounter.bin(¼g¤JreadArray[0]) 
+int get_counter() {  //è®€å–counter.bin(å¯«å…¥readArray[0]) 
 	int readArray[1];
-	FILE* tmpfp = fopen(counterFile, "rb");  //°ßÅª
-	fread(readArray, sizeof(int), 1, tmpfp);  //±NÅª¨úcounter.bin(tmpfp)ªºµ²ªG¼g¤JcounterArray
+	FILE* tmpfp = fopen(counterFile, "rb");  //å”¯è®€
+	fread(readArray, sizeof(int), 1, tmpfp);  //å°‡è®€å–counter.bin(tmpfp)çš„çµæœå¯«å…¥counterArray
 	fclose(tmpfp);
 	return readArray[0];
 }
 
-int num_in_numset(int num, int numSet[], int Len) {  //ÀË¬d¬O§_­«½Æ 
+int num_in_numset(int num, int numSet[], int Len) {  //æª¢æŸ¥æ˜¯å¦é‡è¤‡ 
 	int ret = 0;
 	for(int i = 0 ; i < Len ; i++) {
 		if(num == numSet[i]) {
 			ret = 1;
-			break;  //¸õ¥Xfor°j°é 
+			break;  //è·³å‡ºforè¿´åœˆ 
 		}
 	}
 	return ret;  //1:True  0:False 
@@ -64,18 +64,18 @@ int num_in_numset(int num, int numSet[], int Len) {  //ÀË¬d¬O§_­«½Æ
 void print_lotto_row(FILE* tmpfp, int n) {
 	int numSet[maxLottoNum];
 	
-	//generate lotto row ²£¥Í¸¹½X(¶Ã¼Æ)  
+	//generate lotto row ç”¢ç”Ÿè™Ÿç¢¼(äº‚æ•¸)  
 	fprintf(tmpfp, "[%d] : ", n);
-	for(int i = 0 ; i < maxLottoNum-1 ; ) {  //´¶³q¼Æ¦r  
+	for(int i = 0 ; i < maxLottoNum-1 ; ) {  //æ™®é€šæ•¸å­—  
 		int num = rand() % 69 + 1;
-		if(num_in_numset(num, numSet, maxLottoNum-1)) {  //(¤U¤@­Ó¨ç¦¡)
-			continue;  //­«½Æ´NÄ~Äòfor°j°é 
+		if(num_in_numset(num, numSet, maxLottoNum-1)) {  //(ä¸‹ä¸€å€‹å‡½å¼)
+			continue;  //é‡è¤‡å°±ç¹¼çºŒforè¿´åœˆ 
 		} else {
-			numSet[i] = num;  //©ñ¶i°}¦C
-			i++;  //¤U¤@½ü
+			numSet[i] = num;  //æ”¾é€²é™£åˆ—
+			i++;  //ä¸‹ä¸€è¼ª
 		}
 	}
-	for(int i = 0 ; i < 1 ; ) {  //¯S§O¼Æ¦r
+	for(int i = 0 ; i < 1 ; ) {  //ç‰¹åˆ¥æ•¸å­—
 		int num = rand() % 10 + 1;
 		if(num_in_numset(num, numSet, maxLottoNum-1)) {
 			continue;
@@ -85,7 +85,7 @@ void print_lotto_row(FILE* tmpfp, int n) {
 		}
 	}
 	
-	//sorting lotto row ±Æ§Ç
+	//sorting lotto row æ’åº
 	for(int i = 0 ; i < maxLottoNum-1 ; ++i) {
 		for(int j = 0 ; j < i ; ++j) {
 			if(numSet[j] > numSet[i]) {
@@ -96,7 +96,7 @@ void print_lotto_row(FILE* tmpfp, int n) {
 		}
 	}
 	
-	//output lotto row ¦L¸¹½X
+	//output lotto row å°è™Ÿç¢¼
 	for(int i = 0 ; i < maxLottoNum ; i++) {  
 		fprintf(tmpfp, "%02d ", numSet[i]);
 	}
@@ -110,9 +110,9 @@ void print_lottofile(int numSet, int counter, char lottoFile[], int operator_id)
 	FILE* tmpfp = fopen(lottoFile, "w+");  //lottoFile[32]
 	fprintf(tmpfp, "========= lotto649 =========\n");
 	fprintf(tmpfp, "========+ No.%05d +========\n", counter);
-	fprintf(tmpfp, "= %.*s =\n", 24, ctime(&curtime));  //¦L¥Ø«e®É¶¡¡A­­¨î¼g24®æ
+	fprintf(tmpfp, "= %.*s =\n", 24, ctime(&curtime));  //å°ç›®å‰æ™‚é–“ï¼Œé™åˆ¶å¯«24æ ¼
 	
-	for(int i = 0 ; i < maxLottoNumSet ; i++) {  //¦L¤¤¶¡¤­¦æ 
+	for(int i = 0 ; i < maxLottoNumSet ; i++) {  //å°ä¸­é–“äº”è¡Œ 
 		if(i < numSet) {
 			print_lotto_row(tmpfp, i+1);
 		} else {
@@ -125,7 +125,7 @@ void print_lottofile(int numSet, int counter, char lottoFile[], int operator_id)
 	fclose(tmpfp);
 }
 
-int ID = 0;  //°O¿ıoperator_id 
+int ID = 0;  //è¨˜éŒ„operator_id 
 
 void set_operatorID(int operator_id) {
 	int opArray[1];
@@ -136,25 +136,25 @@ void set_operatorID(int operator_id) {
 	fclose(tmpfp);
 }
 
-int quan = 0;  //°O¿ınumSet 
+int quan = 0;  //è¨˜éŒ„numSet 
 
-void do_lotto_main(int counter) {  //¶}ÀY 
-	char lottoFile[32];  //°O¿ıÀÉ¦W 
-	int numSet = 0;  //¶R´X²Õ
+void do_lotto_main(int counter) {  //é–‹é ­ 
+	char lottoFile[32];  //è¨˜éŒ„æª”å 
+	int numSet = 0;  //è²·å¹¾çµ„
 	int operator_id;  //ID
-	snprintf(lottoFile, 32, "lotto[%05d].txt", counter);  //§â«á­±ªºÀÉ®×¦W½Æ»s¨ìlottoFile
-	printf("Åwªï¥úÁ{ªø©°¼Ö³z±mÁÊ¶R¾÷¥x\n");
-	printf("½Ğ¿é¤J¾Ş§@¤H­ûID : ");
+	snprintf(lottoFile, 32, "lotto[%05d].txt", counter);  //æŠŠå¾Œé¢çš„æª”æ¡ˆåè¤‡è£½åˆ°lottoFile
+	printf("æ­¡è¿å…‰è‡¨é•·åºšæ¨‚é€å½©è³¼è²·æ©Ÿå°\n");
+	printf("è«‹è¼¸å…¥æ“ä½œäººå“¡ID : ");
 	scanf("%d", &operator_id);
-	printf("½Ğ°İ±z­nÁÊ¶R´X²Õ(1~5) : ");
+	printf("è«‹å•æ‚¨è¦è³¼è²·å¹¾çµ„(1~5) : ");
 	scanf("%d", &numSet);
 	quan = numSet;
 	print_lottofile(numSet, counter, lottoFile, operator_id);
 	set_operatorID(operator_id);
-	printf("¤w¬°±zÁÊ¶Rªº %d ²Õ¼Ö³z²Õ¦X¿é¥X¦Ü %s\n", numSet, lottoFile);
+	printf("å·²ç‚ºæ‚¨è³¼è²·çš„ %d çµ„æ¨‚é€çµ„åˆè¼¸å‡ºè‡³ %s\n", numSet, lottoFile);
 }
 
-void set_counter(int counter) {  ////°O¿ıcounter++ 
+void set_counter(int counter) {  ////è¨˜éŒ„counter++ 
 	int writeArray[1];
 	writeArray[0] = counter;
 	FILE* tmpfp = fopen(counterFile, "wb");
@@ -164,12 +164,12 @@ void set_counter(int counter) {  ////°O¿ıcounter++
 
 int main() {
 	int counter;
-	init_file();  //ªì©l¤Æ°O¿ıÀÉ
-	counter = get_counter();  //Åª¨ú°O¿ıÀÉ 
-	do_lotto_main(++counter);  //¤¤¶¡¨º¤j¦ê
+	init_file();  //åˆå§‹åŒ–è¨˜éŒ„æª”
+	counter = get_counter();  //è®€å–è¨˜éŒ„æª” 
+	do_lotto_main(++counter);  //ä¸­é–“é‚£å¤§ä¸²
 	int operator_id = ID;
     int numSet = quan;
     frecord(counter, ID, quan);
-	set_counter(counter);  //°O¿ıcounter++
+	set_counter(counter);  //è¨˜éŒ„counter++
 	return 0; 
 } 
