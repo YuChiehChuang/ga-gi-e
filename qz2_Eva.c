@@ -34,11 +34,11 @@ int main(){
 		//printf("%d\t%d\t%d\t%s\n", tmp[i].lotto_no, tmp[i].lotto_receipt, tmp[i].emp_id, tmp[i].lotto_date);
 		i++;
 	}	
-
+	i--;
 
 	int no = 0; // = lotto_no = currentCount = i
 	int dateSum = 0, noSum, setsSum = 0, receiptSum = 0;
-	int j = 0, r = 0;
+	int j = 0;
 	
 	fprintf(reportFile,"========= lotto649 Report =========\n");
 	fprintf(reportFile,"- Date ------- Num. ------ Receipt -\n");
@@ -46,21 +46,20 @@ int main(){
 	while(j<=i){
 		int sets = 0; // lotto_receipt/55
 		int receipt = 0; // =lotto_receipt
-		while(strcmp(tmp[j].lotto_date,tmp[j+1].lotto_date) == 0)j++;
-		
-		for(; r <= j; r++){
-			sets = sets + (tmp[r].lotto_receipt/55);
-			receipt = receipt + tmp[r].lotto_receipt;
+		while(strcmp(tmp[j].lotto_date,tmp[j+1].lotto_date) == 0){
+			sets = sets + (tmp[j].lotto_receipt/55);
+			receipt = receipt + tmp[j].lotto_receipt;
+			j++;
 		}
-		r--;
-		no = tmp[r].lotto_no - no;
-		
+		sets = sets + (tmp[j].lotto_receipt/55);
+		receipt = receipt + tmp[j].lotto_receipt;
+		no = tmp[j].lotto_no - no;
 		dateSum ++;
+		printf("%d",no);
 		setsSum = setsSum + sets;
 		receiptSum = receiptSum + receipt;
-		
-		fprintf(reportFile, "%s\t%d/%d\t\t%d\n", tmp[r].lotto_date, no, sets, receipt);
-		no = tmp[r].lotto_no;
+		fprintf(reportFile, "%s\t%d/%d\t\t%d\n", tmp[j].lotto_date, no, sets, receipt);
+		no = tmp[j].lotto_no;
 		j++;
 	}
 	
